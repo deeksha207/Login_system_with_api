@@ -1,6 +1,6 @@
 <?php
-include('config.php');
-//$google_Client->revokeToken();
+include("config.php");
+$google_Client->revokeToken($_SESSION['access_token']);
 session_destroy();
-header('location:index.php');
+header('Location:index.php');
 ?>
