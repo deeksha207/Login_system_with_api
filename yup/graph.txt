@@ -1,0 +1,405 @@
+ vector<int> v=A;
+    reverse(v.begin(),v.end());
+    int sum=0,carry=1;
+    sum=carry+A[n-1];
+    if(sum<10){
+        A[n-1]=sum;
+        vector<int> res;
+        for(int i=0;i<n;i++){
+            if(A[i]==0){
+                continue;
+            }
+            else{
+                for(int j=i;j<n;j++){
+                    res.push_back(A[j]);
+                }
+                return res;
+            }
+        }
+    }
+    else{
+        for(int i=0;i<n;i++){
+            sum=carry+v[i];
+            if(sum>=10){
+                carry=sum/10;
+                sum%=10;
+            }
+            else{
+                carry=0;
+            }
+            v[i]=sum;
+        }
+        
+    }
+
+
+//////////
+
+
+#include <iostream>
+using namespace std;
+
+ void printdfs(int **edges,int v,int s,bool* vis){
+    cout<<s<<endl;
+    vis[s]=true;
+    for(int i=0;i<v;i++){
+        if(i==s){
+            continue;
+        }
+        if(edges[s][i]==1 && !vis[i]){
+            printdfs(edges,v,i,vis);
+        }
+    }
+ }
+
+int main() {
+    int n,e;
+    cin>>n>>e;
+    int** edges=new int*[n];
+    for(int i=0;i<n;i++){
+        edges[i]=new int[n];
+        for(int j=0;j<n;i++){
+            edges[i][j]=0;
+        }
+    }
+    int f,s;
+    cin>>f>>s;
+    for(int i=0;i<e;i++){
+        cin>>f>>s;
+        edges[f][s]=1;
+        edges[s][f]=0;
+    }
+    bool* vis=new bool[n];
+    for(int i=0;i<n;i++){
+        vis[i]=false;
+    }
+   printdfs(edges,n,0,vis);
+}
+
+
+
+
+//stack
+
+
+#include <iostream>
+using namespace std;
+class Stack{
+    public:
+    int data;
+    Stack* next;
+    Stack *head;
+    Stack *tail;
+    
+    Stack(){
+        this->head=NULL;
+        this->tail=NULL;
+    }
+    Stack(int data){
+        this->data=data;
+        this->next=NULL;
+    }
+    
+    void addnum(int data){
+        Stack* curr=new Stack(data);
+        if(head==NULL){
+            head=curr;
+            tail=head;
+        }
+        else{
+            tail->next=curr;
+            tail=curr;
+        }
+    }
+    
+    int popelem(){
+        if(head==NULL){
+            return -1;
+        }
+        Stack* prev;
+        Stack* temp=head;
+        while(temp->next!=NULL){
+            prev=temp;
+            temp=temp->next;
+        }
+        prev->next=NULL;
+        delete temp;
+        return 0;
+        
+    }
+    void printstack(){
+        Stack* temp=head;
+        if(head==NULL){
+            return;
+        }
+        cout<<temp->data<<endl;
+        while(temp->next!=NULL){
+            temp=temp->next;
+            cout<<temp->data<<endl;
+        }
+    }
+    
+};
+
+int main(){
+    Stack a;
+    a.addnum(4);
+    a.addnum(6);
+    a.popelem();
+    a.printstack();
+}
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+template<typename v>
+class Node{
+  public:
+  string key;
+  v value;
+  Node* next;
+  Node(string key,v value){
+      this->key=key;
+      this->valule=value;
+      next=NULL;
+  }
+  ~Node(){
+      delete next;
+  }
+};
+class map{
+    public:
+    Node<v>** bucket;
+    int size;
+    int numbucket;
+    map(){
+        numbucket=5;
+        bucket=new Node<v>*(numbucket);
+        size=0;
+        for(int i=0;i<numbucket;i++){
+            bucket[i]=NULL;
+        }
+    }
+    ~map(){
+        for(int i=0;i<numbucket;i++){
+            delete bucket[i];
+        }
+        delete [] bucket;
+    }
+
+int sizemap(){
+    return size;
+}
+private:
+int getind(string key){
+    int hashcode=0;
+    int coef=1;
+    for(int i=key.size()-1;i>=0;i--){
+        hashcode+=key[i]*coef;
+        hashcode=hashcode%numbucket;
+        coef*=37;
+        coef%=numbucket;
+    }
+    return hashcode%numbucket;
+}
+
+public:
+
+void insert(string key,v value){
+    int index=getind(key);
+    Node<v>* head=bucket[index];
+    while(head!=NULL){
+        if(head->key==key){
+            head->value=value;
+            return;
+        }
+        head=head->next;
+    }
+    head=bucket[index];
+    Node<v>* newnode=new Node<v>(key,value);
+    newnode->next=head;
+    bucket[index]=newnode;
+    size++;
+}
+
+v removeelem(string key){
+    int index=getind(key);
+    Node<v>* head=bucket[index];
+    Node<v>* prev=NULL;
+    while(head!=NULL){
+     if(head->key==key){
+        if(prev==NULL){
+            bucket[index]=head->next;
+             v data=head->value;
+            head->next=NULL;
+            delete head;
+            size--;
+            return data;
+        }
+        else{
+            prev->next=head->next;
+            v data=head->value;
+            head->next=NULL;
+            delete head;
+            size--;
+            return data;
+        }
+    }
+        prev=head;
+        head=head->next;
+    }
+    return 0;
+}
+
+v search(string key){
+    int index=getind(key);
+    Node<v>* head=bucket[index];
+    while(head!=NULL){
+        if(head->key==key){
+            return head->value;
+        }
+        head=head->next;
+    }
+    return 0;
+}
+};
+
+int main() {
+    map hashobj("abc",3);
+    
+}
+
+
+// Trie code
+
+#include <iostream>
+#include<string>
+using namespace std;
+class Trienode{
+  public:
+  char data;
+  Trienode** children;
+  bool isTerminal;
+  
+  Trienode(char data){
+      this->data=data;
+      children=new Trienode*[26];
+      for(int i=0;i<26;i++){
+          children[i]=NULL;
+      }
+      isTerminal=false;
+  }
+};
+class Trie{
+  Trienode* root;
+  public:
+  Trie(){
+      root->data='\0';
+  }
+  void insert(Trienode* root,string word){
+      if(word.length()==0){
+          root->isTerminal=true;
+          return;
+      }
+      int index=word[0]-'a';
+      Trienode* child;
+      if(root->children[index]!=NULL){
+          child=root->children[index];
+      }
+      else{
+          child=new Trienode(word[0]);
+          root->children[index]=child;
+      }
+      insert(child,word.substr(1));
+  }
+  void insert(string word){
+      insert(root,word);
+  }
+  
+  bool search(Trienode* root,string word){
+      if(word.length()==0){
+          return root->isTerminal;
+      }
+      int i=word[0]-'a';
+      if(root->children[i]==NULL){
+          return false;
+      }
+      Trienode* child=root->children[i];
+      return search(child,word.substr(1));
+  }
+  bool search(string word){
+      return search(root,word);
+  }
+  void remove(Trienode* root,string word){
+      if(word.length()==0){
+          root->isTerminal=false;
+          return;
+      }
+      int i=word[0]-'a';
+      Trienode* child;
+      if(root->children!=NULL){
+          child=root->children[i];
+      }
+      else{
+          return;
+      }
+      remove(child,word.substr(1));
+      if(child->isTerminal==false){
+          for(int i=0;i<26;i++){
+             if(child->children[i]!=NULL){
+                 return;
+             }
+          }
+          delete child;
+          root->children[i]=NULL;
+      }
+  }
+  void remove(string word){
+      remove(root,word);
+  }
+  
+};
+
+
+int main() {
+	int choice;
+	cin >> choice;
+	Trie t;
+
+	//cout << "asasas";
+	while(choice != -1){
+		string word;
+        bool ans;
+		switch(choice) {
+            case 1 : // insert
+            	// getline(cin, word);
+            	cin >> word;
+                t.insert(word);
+                break;
+            case 2 : // search
+            	// getline(cin, word);
+            	cin >> word;
+                ans = t.search(word);
+                if (ans) {
+                    cout << "true" << endl;
+                } else {
+                    cout << "false" << endl;
+                }
+                break;
+            default :
+                return 0;
+        }
+        cin >> choice;
+	}
+	return 0;
+}
+
+
+
+
+
+
